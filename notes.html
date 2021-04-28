@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>OnTools - Notes</title>
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+    <meta name="theme-color" content="white" />
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/ontools-icon-152.png">
+    <meta name="theme-color" content="white" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="OnTools">
+    <meta name="msapplication-TileImage" content="images/ontools-icon-144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!--Notes page functions: auth check, indexeddb add, read, delete---->
+    <script src="js/notes_functions.js"></script>
+
+    <!------------------------>
+
+</head>
+
+<body class="fullscreen">
+
+    <div class="container">
+        <div id="page-wrap">
+            <section id="main-content">
+                <div id="guts">
+
+                    <h2>Notes</h2>
+                    <p>Notes page is going to be here</p>
+                </div>
+            </section>
+            <header>
+                <h1>Bottom Main Menu</h1>
+
+                <nav>
+                    <ul class="group">
+                        <li><a href="market.html">Market</a></li>
+                        <li><a href="tools.html">Tools</a></li>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="reports.html">Reports</a></li>
+                        <li><a href="notes.html">Notes</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+        </div>
+
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+    <!--firebase config-->
+    <script src="js/config.js"></script>
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+
+</html>

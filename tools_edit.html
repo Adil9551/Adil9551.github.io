@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>OnTools - Tool Edit</title>
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+    <meta name="theme-color" content="white" />
+    <link rel="stylesheet" href="css/tools.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <noscript><link rel="stylesheet" href="css/noscript.css"></noscript>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/ontools-icon-152.png">
+    <meta name="theme-color" content="white" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="OnTools">
+    <meta name="msapplication-TileImage" content="images/ontools-icon-144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!--Tools page functions---->
+    <script type="application/javascript" src="js/tools_edit.js?ver=1"></script>
+    <!---Tesseract JS----->
+    <script type="application/javascript" src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+    <!------------------------>
+
+</head>
+
+<body class="fullscreen">
+    <div class="background"></div>
+    <div class="d-flex justify-content-center">
+        <div class="d-flex align-self-center">
+            <h5 id="pageTitle" class="py-2"></h5>
+        </div>
+    </div>
+    <div class="overlay_noscript"></div>
+    <div class="container">
+        <div id="page-wrap">
+            <div class="start_ocr">
+
+                <h6 class="text-center text-primary">Take a photo of a text to prefill</h5>
+                    <label for="fields">Active field:</label>
+
+                    <select name="fields" class="form-select form-select-sm" id="fields">
+                    <option value="Name">Name</option>
+                    <option value="Store">Store</option>
+                    <option value="Date">Date</option>
+                    <option value="Price">Price</option>
+                </select>
+                    <span id="ocr_text" style="display: none;"></span>
+                    <div class="photo_container my-2">
+                        <video id="video" width="180" height="50" autoplay></video>
+
+                        <div class="photoArea"></div>
+
+                    </div>
+                    <canvas style="border:1px solid #d3d3d3; display:none;"></canvas>
+                    <!--<img width="300" height="150" id="myImage" />-->
+
+                    <script type="text/javascript">
+                        function prefill() {
+                            document.getElementsByClassName("start_ocr")[0].style.display = "block";
+                            document.getElementsByClassName("start_ocr")[1].style.display = "block";
+                            document.getElementById('prefill').style.display = "none";
+                            document.getElementById('stopcam').style.display = "flex";
+                            //Default active field for OCR
+                            //document.getElementById("fields").value = "Name";
+                            //Get screen dimentions
+                            var w = screen.width;
+                            var h = screen.height;
+                            //var s = window.devicePixelRatio;
+                            //document.getElementById('dim').innerHTML = "Width:"+w+".Height:"+h+". Pixels:"+s;
+                            var video = document.querySelector('video');
+                            const constraints = {
+                                video: {
+                                    width: {
+                                        ideal: h / 2,
+                                    },
+                                    height: {
+                                        ideal: w,
+                                    },
+                                    facingMode: {
+                                        ideal: 'environment'
+                                    }
+                                }
+                            };
+                            navigator.mediaDevices.getUserMedia(constraints)
+                                .then(stream => video.srcObject = stream)
+                                .catch(e => console.log(e.name + ": " + e.message));
+                        }
+
+                        function takePhoto() {
+                            document.getElementById("myBtn").disabled = true;
+                            document.getElementById("ocr_text").innerText = " working...";
+                            var canvas = document.querySelector('canvas');
+                            var ocr_image = ''
+                            var ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 90, 150, 240, 60, 0, 0, 180, 50);
+                            ocr_image = canvas.toDataURL('image/jpeg');
+                            //document.getElementById('myImage').src = ocr_image;
+                            submitToGoogle(ocr_image);
+                        }
+
+                        //Google Vision//
+                        let submitToGoogle = async(img) => {
+                            //strip header = data:image\/(png|jpg|jpeg)
+                            var image = img.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
+                            try {
+
+                                let body = JSON.stringify({
+                                    requests: [{
+                                        features: [{
+                                            type: "DOCUMENT_TEXT_DETECTION"
+                                        }, ],
+                                        image: {
+                                            content: image
+                                        }
+                                    }]
+                                });
+                                let response = await fetch(
+                                    "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAqPXftsqkSs6TV-ZA4crfUMLsVrsTKbLE", {
+                                        headers: {
+                                            Accept: "application/json",
+                                            "Content-Type": "application/json"
+                                        },
+                                        method: "POST",
+                                        body: body
+                                    }
+                                );
+                                let responseJson = await response.json();
+                                let fullText = responseJson.responses[0].fullTextAnnotation.text;
+                                console.log(fullText);
+                                preFillText(fullText);
+                            } catch (error) {
+                                console.log(error);
+                            }
+
+                        };
+
+                        //End Google Vision//
+                        const preFillText = (text) => {
+                            document.getElementById("myBtn").disabled = false;
+                            var active_field = document.getElementById("fields").value;
+                            if (active_field == "Name") {
+                                document.getElementById("tool_name").value = text
+                            } else if (active_field == "Store") {
+                                document.getElementById("tool_store").value = text
+                            } else if (active_field == "Date") {
+                                //-----Date extraction------
+                                //Search string for mm/dd/yyyy or mm/dd/yy format
+                                const reg = /\d{1,2}\/\d{1,2}\/\d{1,4}/;
+                                var newDate = text.match(reg);
+                                //Convert mm/dd/yyyy to milliseconds
+                                const newDateToMS = Date.parse(newDate);
+                                //Convert milliseconds to ISO yyyy-mm-dd format and populate date field
+                                var dateFormat = new Date(newDateToMS).toISOString().substr(0, 10);
+                                console.log(dateFormat);
+                                document.getElementById("tool_date").value = dateFormat
+                            } else if (active_field == "Price") {
+                                //Search for any numbers with ONLY two decimal points
+                                var r = /[0-9]*\.[0-9][0-9]/g;
+                                //Find highest number - most likely a total amount
+                                var priceMatch = text.match(r);
+                                var newPrice = Math.max(...priceMatch);
+                                document.getElementById("tool_price").value = newPrice;
+                                console.log(newPrice);
+                            }
+                            document.getElementById("ocr_text").style.display = "none";
+
+                        }
+
+                        function stopcam() {
+
+                            var video = document.querySelector('video');
+                            const mediaStream = video.srcObject;
+                            const tracks = mediaStream.getTracks();
+                            tracks.forEach(track => track.stop())
+                            document.getElementsByClassName("start_ocr")[0].style.display = "none";
+                            document.getElementsByClassName("start_ocr")[1].style.display = "none";
+                            document.getElementById('prefill').style.display = "flex";
+                            document.getElementById('stopcam').style.display = "none";
+                        }
+                    </script>
+            </div>
+
+            <section id="main-content">
+                <div id="tool_key" style="display: none;"></div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <a href="/tools.html" class="nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-arrow-left-square mx-1" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                          </svg>Back</a>
+                    </div>
+                    <div class="col-6">
+                        <a class="nav-btn" id="prefill" href="#" style="float:right; display: none;" onclick="prefill()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-camera mx-1" viewBox="0 0 16 16">
+                                <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z"/>
+                                <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
+                              </svg>Prefill</a>
+                        <a class="nav-btn" id="stopcam" href="#" style="float:right; display: none;" onclick="stopcam()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-x-circle mx-1" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                              </svg>Close</a>
+                    </div>
+                </div>
+
+
+                <form class="row g-2 mt-1" action="#" name="tool_form" onsubmit="return false" id="inputs_all">
+                    <div class="col-md-12">
+                        <label class="form-label" for="name">Name:</label>
+                        <input type="text" class="inputs form-control form-control-sm" id="tool_name" name="name" maxlength='30'>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label" for="desc">Description:</label>
+                        <textarea class="inputs form-control form-control-sm" id="tool_desc" name="desc" rows="4" cols="30"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="store">Store:</label>
+                        <input type="text" class="inputs form-control form-control-sm" id="tool_store" name="store" maxlength='30'>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="date">Purhcase date:</label>
+                        <input type="date" class="inputs form-control form-control-sm" id="tool_date" name="date">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" for="price">Price:</label>
+                        <input type="number" class="inputs form-control form-control-sm" id="tool_price" name="price" maxlength='20'>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="lend">Lend to:</label>
+                        <input class="form-control form-control-sm" type="text" id="tool_lend" name="lend" maxlength='20'>
+                    </div>
+
+                    <input class="btn btn-sm btn-success w-100 my-4" id="submit_btn" type="submit" value="Save" onclick="update_tool_data()">
+
+                </form>
+                <div id="loader2" style="display:none;">Saving.......</div>
+                <div id="saved" style="display:none; color:green;">Saved!</div>
+                <div id="timestamp"></div>
+
+                <div class="row">
+
+                    <div id="photo_div" class="col-6">
+                        <label id="myFile_label" for="myFile" class="custom-file-upload w-100 text-center">
+                                <i class=""></i>Change photo
+                            </label>
+                        <input id="myFile" name="attachment" type="file" accept="image/x-png,image/jpeg" onchange="update_tool_photo()" />
+
+                        <img id="tool_photo" src="" alt="" width='80' height='80' class="mx-auto d-flex">
+                    </div>
+
+                    <div id="doc_div" class="col-6">
+
+                        <label id="myFile_label2" for="myDoc" class="custom-file-upload w-100 text-center">
+                                <i class=""></i>Change Doc
+                            </label>
+                        <input id="myDoc" name="attachment_doc" type="file" accept="image/x-png,image/jpeg" onchange="update_tool_doc()" />
+                        <br>
+                        <a id="tool_doc_link" class="" href="#" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" fill="#103783" class="bi bi-file-earmark-text mt-3 mx-auto d-flex" viewBox="0 0 16 16">
+                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                              </svg>
+                        </a>
+
+                    </div>
+                </div>
+
+                <a class="btn btn-sm btn-danger w-100 my-4" href="#" onclick="delete_confirm()">Delete item</a>
+            </section>
+        </div>
+
+    </div>
+    <div id="take_snap" class="start_ocr">
+        <button id="myBtn" class="btn btn-warning" onclick="takePhoto()" style="width:150px; height: 50px;">Take Photo</button>
+    </div>
+    <script src="js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+
+    <!--firebase config-->
+    <script src="js/config.js"></script>
+    <script type="application/javascript">
+        window.addEventListener('load', function() {
+
+            get_tool_data()
+
+        });
+    </script>
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+
+</html>

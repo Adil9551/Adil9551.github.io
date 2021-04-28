@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>OnTools</title>
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+    <meta name="theme-color" content="white" />
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/ontools-icon-152.png">
+    <meta name="theme-color" content="white" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="OnTools">
+    <meta name="msapplication-TileImage" content="images/ontools-icon-144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!--Homepage functions: auth check, indexeddb add, read, delete---->
+    <script src="js/market_functions.js"></script>
+    <!---Tesseract JS----->
+    <script type="application/javascript" src='https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js'></script>
+
+    <style>
+        .photo_container {
+            width: 100%;
+            height: 320px;
+            position: relative;
+            border: 1px solid #d3d3d3;
+            float: left;
+        }
+        
+        .photo_container video {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+        
+        .photo_container .photoArea {
+            border: 2px dashed white;
+            width: 180px;
+            height: 50px;
+            position: relative;
+            margin: 0 auto;
+            top: 110px;
+        }
+        
+        #take_snap {
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translate(-50%, -50%);
+            margin: 0 auto;
+        }
+        
+        .start_ocr {
+            display: none;
+        }
+    </style>
+
+    <!------------------------>
+
+</head>
+
+<body class="fullscreen">
+
+    <div class="container">
+        <div id="page-wrap">
+            <section id="main-content">
+
+                <div class="start_ocr">
+                    <p id="dim">OCR text will appear here...</p>
+                    <h2>Testing video/photo capture</h2>
+                    <div class="photo_container">
+                        <video id="video" width="400" height="320" autoplay></video>
+                        <div class="photoArea"></div>
+                    </div>
+                    <canvas width='180' height='50' style="border:1px solid #d3d3d3; display:none;"></canvas>
+                    <img width="" height="" id="myImage" />
+                    <script type="text/javascript">
+                        function autocomplete() {
+                            document.getElementsByClassName("start_ocr")[0].style.display = "block";
+                            document.getElementsByClassName("start_ocr")[1].style.display = "block";
+                            //Get screen dimentions
+                            var w = screen.width;
+                            var h = screen.height;
+                            //var s = window.devicePixelRatio;
+                            //document.getElementById('dim').innerHTML = "Width:"+w+".Height:"+h+". Pixels:"+s;
+                            var video = document.querySelector('video');
+                            const constraints = {
+                                video: {
+                                    width: {
+                                        ideal: h / 2,
+
+                                    },
+                                    height: {
+                                        ideal: w,
+
+                                    },
+                                    facingMode: {
+                                        ideal: 'environment'
+                                    }
+                                }
+                            };
+                            navigator.mediaDevices.getUserMedia(constraints)
+                                .then(stream => video.srcObject = stream)
+                                .catch(e => console.log(e.name + ": " + e.message));
+                        }
+
+                        function takePhoto() {
+                            var canvas = document.querySelector('canvas');
+                            var ocr_image = ''
+                            var ctx = canvas.getContext('2d');
+                            ctx.drawImage(video, 90, 150, 360, 140, 0, 0, 280, 120);
+                            ocr_image = canvas.toDataURL('image/jpeg');
+                            document.getElementById('myImage').src = ocr_image;
+                            submitToGoogle(ocr_image);
+                        }
+
+                        function stopcam() {
+                            var video = document.querySelector('video');
+                            const mediaStream = video.srcObject;
+                            const tracks = mediaStream.getTracks();
+                            tracks.forEach(track => track.stop())
+                            document.getElementsByClassName("start_ocr")[0].style.display = "none";
+                            document.getElementsByClassName("start_ocr")[1].style.display = "none";
+                        }
+                        //Google Vision//
+                        let submitToGoogle = async(img) => {
+                            //strip header = data:image\/(png|jpg|jpeg)
+                            var image = img.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")
+                                //console.log(image);
+                            try {
+
+                                let body = JSON.stringify({
+                                    requests: [{
+                                        features: [{
+                                            type: "DOCUMENT_TEXT_DETECTION"
+                                        }, ],
+                                        image: {
+                                            content: image
+                                        }
+                                    }]
+                                });
+                                let response = await fetch(
+                                    "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAqPXftsqkSs6TV-ZA4crfUMLsVrsTKbLE", {
+                                        headers: {
+                                            Accept: "application/json",
+                                            "Content-Type": "application/json"
+                                        },
+                                        method: "POST",
+                                        body: body
+                                    }
+                                );
+                                let responseJson = await response.json();
+                                let fullText = responseJson.responses[0].fullTextAnnotation.text;
+                                console.log(fullText);
+
+                            } catch (error) {
+                                console.log(error);
+                            }
+
+                        };
+
+                        //End Google Vision//
+                    </script>
+                </div>
+                <button onclick="autocomplete()">Open Camera</button>
+                <button onclick="stopcam()">Stop Camera</button>
+            </section>
+            <header>
+                <h1>Bottom Main Menu</h1>
+
+                <nav>
+                    <ul class="group">
+                        <li><a href="market.html">Market</a></li>
+                        <li><a href="tools.html">Tools</a></li>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="reports.html">Reports</a></li>
+                        <li><a href="notes.html">Notes</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+        </div>
+
+    </div>
+    <div id="take_snap" class="start_ocr">
+        <input type="button" value="take snapshot" onclick="takePhoto()" />
+    </div>
+    <script src="js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+    <!--firebase config-->
+    <script src="js/config.js"></script>
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>OnTools</title>
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+    <meta name="theme-color" content="white" />
+    <link rel="stylesheet" href="css/home.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/ontools-icon-152.png">
+    <meta name="theme-color" content="white" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="OnTools">
+    <meta name="msapplication-TileImage" content="images/ontools-icon-144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!--Homepage functions: auth check, indexeddb add, read, delete---->
+    <script src="js/home_edit_profile_func.js"></script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <script>
+        function signUserOut() {
+            firebase.auth().signOut().then(function() {
+                console.log('Signed Out');
+                window.location = "/index.html";
+            }, function(error) {
+                console.error('Sign Out Error', error);
+            });
+
+        };
+    </script>
+</head>
+
+<body class="fullscreen">
+    <div class="background"></div>
+    <div class="d-flex justify-content-center">
+        <div class="d-flex align-self-center">
+            <h5 class="py-2">Edit Account</h5>
+        </div>
+    </div>
+    <div class="container">
+
+        <!--  <a href="../home.html">Back</a>
+            <div id="loader2" style="display:none;">Loading.......</div>
+            <div id="saved" style="display:none; color:green;">Saved!</div>
+                <form action="#" name="profile_form" onsubmit="return false">
+                    <label for="name">Name:</label>
+                    <input type="text" id="user_name" name="name" maxlength='30'><br><br>
+
+                    <label for="dob">Date of birth:</label>
+                    <input type="date" id="user_dob" name="dob"><br><br>
+
+                    <label for="title">Occupation/trade:</label>
+                    <input type="text" id="user_title" name="title" maxlength='20'><br><br>
+
+                    <label for="email">Email:</label>
+                    <input type="text" id="user_email" name="email" maxlength='30'><br><br>
+
+                    <label for="phone">Phone:</label>
+                    <input type="number" id="user_phone" name="phone" maxlength='20'><br><br>
+                    
+                    <label for="city">City:</label>
+                    <input type="text" id="user_city" name="city" maxlength='20'><br><br>
+
+                    <label for="province">Province:</label>
+                    <input type="text" id="user_province" name="province" maxlength='20'><br><br>
+
+                    <label for="country">Country:</label>
+                    <input type="text" id="user_country" name="country" maxlength="20"><br><br>
+                    <input type="submit" value="Save" onclick="update_profile_data()">
+                </form>
+                <div id="pass_loader" style="display:none;">Loading.......</div>
+                <div id="pass_saved" style="display:none; color:green;">Saved!</div>
+                <div id="timestamp"></div>
+                <form action="#" name="password_form" onsubmit="return false">    
+                    <label for="password">New password:</label>
+                    <input type="password" id="user_password" name="password" maxlength="15"><br><br>
+
+                    <label for="password_confirm">Confirm password:</label>
+                    <input type="password" id="user_password_confirm" name="password_confirm" maxlength="15"><br><br>
+                    
+                    <input type="submit" value="Change password" onclick="update_profile_password()">
+                </form>  -->
+        <div class="row">
+            <div class="col-12">
+                <a href="../home.html" class="text-dark text-decoration-none d-flex align-items-center"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-arrow-left-square mx-1" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                  </svg>Back</a>
+            </div>
+        </div>
+
+        <div id="loader2" style="display:none;">Loading.......</div>
+        <div id="saved" style="display:none; color:green;">Saved!</div>
+        <form class="row g-2 mt-1" action="#" name="profile_form" onsubmit="return false">
+            <div class="col-6">
+                <label for="name" class="form-label">Full name</label>
+                <input type="text" class="form-control form-control-sm" id="user_name" maxlength='30'>
+            </div>
+            <div class="col-6">
+                <label for="dob" class="form-label">Date of birth:</label>
+                <input type="date" class="form-control form-control-sm" id="user_dob">
+            </div>
+            <div class="col-6">
+                <label for="title" class="form-label">Occupation/trade:</label>
+                <input type="text" class="form-control form-control-sm" id="user_title" maxlength='20'>
+            </div>
+
+            <div class="col-6">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control form-control-sm" id="user_email" maxlength='30'>
+            </div>
+            <div class="col-6">
+                <label for="phone" class="form-label">Phone:</label>
+                <input type="number" class="form-control form-control-sm" id="user_phone" maxlength='20'>
+            </div>
+            <div class="col-6">
+                <label for="city" class="form-label">City:</label>
+                <input type="text" class="form-control form-control-sm" id="user_city" maxlength='20'>
+            </div>
+            <div class="col-3">
+                <label for="province" class="form-label">Province:</label>
+                <input type="text" class="form-control form-control-sm" id="user_province" maxlength='20'>
+            </div>
+            <div class="col-9">
+                <label for="country" class="form-label">Country:</label>
+                <input type="text" class="form-control form-control-sm" id="user_country" maxlength='20'>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-sm btn-success w-100 my-2" value="Save" onclick="update_profile_data()">Save</button>
+            </div>
+        </form>
+
+        <div id="pass_loader" style="display:none;">Loading.......</div>
+        <div id="pass_saved" style="display:none; color:green;">Saved!</div>
+        <p id="timestamp" class="text-muted fst-italic"></p>
+        <form class="row g-3" action="#" name="password_form" onsubmit="return false">
+            <div class="col-6">
+                <label for="password" class="form-label">New password:</label>
+                <input type="password" class="form-control form-control-sm" id="user_password" name="password" maxlength="15">
+
+                <label for="password_confirm" class="form-label">Confirm password:</label>
+                <input type="password" class="form-control form-control-sm" id="user_password_confirm" name="password_confirm" maxlength="15">
+            </div>
+
+            <!-- <div class="col-6 d-flex pt-3">
+                <div class="p-2 m-4 bg-primary text-white flex-center text-center align-items-center">
+                    <p>Payment <br> and Subscription Info</p>
+                    <div class="">
+
+                        <a href="" class="text-white text-decoration-none mx-2 d-flex align-items-center justify-content-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
+                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                            <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                          </svg> <span class="p-1">Edit</span></a>
+                    </div>
+
+                </div>
+            </div>-->
+
+            <div class="col-12">
+                <button type="submit" value="Change password" class="btn btn-sm btn-success w-100 my-2" onclick="update_profile_password()">Change password</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script src="js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+    <!--firebase config-->
+    <script src="js/config.js"></script>
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            get_profile_data()
+            check_email_verified();
+
+        });
+    </script>
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js " integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW " crossorigin="anonymous "></script>
+</body>
+
+</html>

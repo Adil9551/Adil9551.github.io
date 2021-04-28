@@ -1,0 +1,53 @@
+.background {
+    background: url(/images/bk_image.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    z-index: -1;
+}
+
+.shadow-effect-logo {
+    -webkit-box-shadow: 1px 0px 4px 3px #5a5757;
+    /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 1px 0px 4px 3px #5a5757;
+    /* Firefox 3.5 - 3.6 */
+    box-shadow: 1px 0px 4px 3px #5a5757;
+    /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    border-radius: 11px;
+}
+
+.login-logo {
+    width: 75px;
+    height: 75px;
+}
+
+
+/* Loader style */
+
+svg {
+    width: 60px;
+    height: 60px;
+    margin: 20px;
+    display: inline-block;
+}
+
+.form-input-img {
+    height: 26px;
+}
+
+.title {
+    font-size: 3rem;
+    color: white;
+}
+
+
+/* Bootstrap overwrites  */
+
+.input-group-text {
+    background-color: #96989A !important;
+    border: none !important;
+}

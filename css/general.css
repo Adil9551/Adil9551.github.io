@@ -1,0 +1,63 @@
+@import url(https://fonts.googleapis.com/css?family=Comfortaa:400,700,300);
+body {
+    font-family: sans-serif;
+}
+
+html,
+.fullscreen {
+    display: block;
+    height: 100%;
+    margin-bottom: 62.5px;
+    padding: 0;
+    width: 100%;
+}
+
+.nav-btn {
+    color: #212529;
+    align-items: center;
+    display: flex;
+    text-decoration: none;
+}
+
+
+/* Small devices (landscape phones, 320px and up) */
+
+
+/* @media (min-width: 320px) {
+    html,
+    .fullscreen {
+        margin-bottom: 70%;
+    }
+} */
+
+
+/* Small devices (landscape phones, 375px and up) */
+
+
+/* @media (min-width: 375px) {
+    html,
+    .fullscreen {
+        margin-bottom: 20%;
+    }
+} */
+
+
+/* Small devices (landscape phones, 576px and up) */
+
+
+/* @media (min-width: 576px) {
+    html,
+    .fullscreen {
+        margin-bottom: 5%;
+    }
+} */
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    line-height: 14px;
+    border-top: 1px solid #999;
+    filter: drop-shadow(0 0 4px #999);
+}

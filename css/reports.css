@@ -1,0 +1,46 @@
+.background {
+    background: url(/images/bk_image.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 100vw;
+    height: 2vh;
+    position: relative;
+    z-index: -1;
+}
+
+#saved_reports {
+    height: 200px;
+    overflow-y: auto;
+}
+
+#pdf_list {
+    height: 150px;
+    overflow-y: auto;
+}
+
+.pdf_header {
+    font-weight: bold;
+}
+
+.pdf_items {
+    padding: 10px 0;
+    ;
+}
+
+.save_span {
+    float: right;
+}
+
+.save_span::after {
+    content: "⬇ Save report";
+}
+
+.bi-trash-fill {
+    float: right;
+}
+
+.bi-trash-fill::after {
+    content: "Delete report"
+}

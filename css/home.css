@@ -1,0 +1,74 @@
+.shadow-effect {
+    -webkit-box-shadow: 3px 3px 5px 6px #ccc;
+    /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 3px 3px 5px 6px #ccc;
+    /* Firefox 3.5 - 3.6 */
+    box-shadow: 3px 3px 5px 6px #ccc;
+    /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+}
+
+.shadow-effect-logo {
+    -webkit-box-shadow: 1px 0px 4px 3px #5a5757;
+    /* Safari 3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+    -moz-box-shadow: 1px 0px 4px 3px #5a5757;
+    /* Firefox 3.5 - 3.6 */
+    box-shadow: 1px 0px 4px 3px #5a5757;
+    /* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+    border-radius: 11px;
+}
+
+.background {
+    background: url(/images/bk_image.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 100vw;
+    height: 2vh;
+    position: relative;
+    z-index: -1;
+}
+
+.login-logo {
+    width: 75px;
+    height: 75px;
+}
+
+.form-input-img {
+    height: 26px;
+}
+
+.title {
+    font-size: 3rem;
+    color: white;
+}
+
+.home-tools-list {
+    height: 180px;
+    overflow-y: scroll;
+}
+
+.home-tools-list div {
+    width: 80px;
+    height: auto;
+}
+
+.home-tools-list img {
+    width: 85%;
+    /*height: 85%;*/
+    display: inline;
+    overflow: hidden;
+}
+
+#reports {
+    height: 290px;
+    overflow-y: auto;
+}
+
+
+/* Bootstrap overwrites  */
+
+.input-group-text {
+    background-color: #96989A !important;
+    border: none !important;
+}

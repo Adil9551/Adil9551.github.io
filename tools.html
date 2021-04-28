@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>OnTools - Tools</title>
+    <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+    <meta name="theme-color" content="white" />
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/tools.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="images/ontools-icon-152.png">
+    <meta name="theme-color" content="white" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="OnTools">
+    <meta name="msapplication-TileImage" content="images/ontools-icon-144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!--Tools page functions: auth check, indexeddb add, read, delete---->
+    <script src="js/tools_functions.js"></script>
+    <!--Custom tools table css, search js-->
+    <script>
+        function searchTools() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+    <!------------------------>
+
+</head>
+
+<body class="fullscreen">
+    <div class="background"></div>
+    <div class="d-flex justify-content-center">
+        <div class="d-flex align-self-center">
+            <h5 class="py-2">My Toolbox</h5>
+        </div>
+    </div>
+    <div class="container">
+        <!-- <div class="row pt-5">
+            <div class="col-5 m-0">
+               <div class="">
+                    <select class="form-select form-select-sm" aria-label=".form-select-sm filter">
+                            <option selected value="All">All</option>
+                            <option value="Newest">Newest</option>
+                            <option value="Favourites">Favourites</option>
+                          </select>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="row">
+            <div id="page-wrap">
+                <section id="main-content">
+                    <input type="text" id="myInput" class="form-control form-control-sm" onkeyup="searchTools()"
+                        placeholder="Search name..">
+                    <a class="btn btn-sm btn-primary my-2" href="/tools_edit.html?New">New</a>
+                    <div class="toolsTableContainer">
+                        <table id="myTable"></table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto mb-0 w-100 bg-light">
+        <div class="w-100 px-0 row mx-auto justify-content-center">
+            <!-- <div class="col-2 p-3">
+                <a href="market.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="grey" class="bi bi-cart-fill" viewBox="0 0 16 16">
+                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                </a>
+            </div> -->
+            <div class="col-2 p-3">
+                <a href="tools.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="grey" class="bi bi-tools"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M1 0L0 1l2.2 3.081a1 1 0 0 0 .815.419h.07a1 1 0 0 1 .708.293l2.675 2.675-2.617 2.654A3.003 3.003 0 0 0 0 13a3 3 0 1 0 5.878-.851l2.654-2.617.968.968-.305.914a1 1 0 0 0 .242 1.023l3.356 3.356a1 1 0 0 0 1.414 0l1.586-1.586a1 1 0 0 0 0-1.414l-3.356-3.356a1 1 0 0 0-1.023-.242L10.5 9.5l-.96-.96 2.68-2.643A3.005 3.005 0 0 0 16 3c0-.269-.035-.53-.102-.777l-2.14 2.141L12 4l-.364-1.757L13.777.102a3 3 0 0 0-3.675 3.68L7.462 6.46 4.793 3.793a1 1 0 0 1-.293-.707v-.071a1 1 0 0 0-.419-.814L1 0zm9.646 10.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708zM3 11l.471.242.529.026.287.445.445.287.026.529L5 13l-.242.471-.026.529-.445.287-.287.445-.529.026L3 15l-.471-.242L2 14.732l-.287-.445L1.268 14l-.026-.529L1 13l.242-.471.026-.529.445-.287.287-.445.529-.026L3 11z" />
+                    </svg>
+                </a>
+            </div>
+            <div class="col-2 p-3">
+                <a href="home.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="grey"
+                        class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z" />
+                    </svg>
+                </a>
+            </div>
+            <div class="col-2 p-3">
+                <a href="reports.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="grey"
+                        class="bi bi-file-earmark-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M4 0h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm5.5 1.5v2a1 1 0 0 0 1 1h2l-3-3z" />
+                    </svg>
+                </a>
+            </div>
+            <!--<div class="col-2 p-3">
+                <a href="notes.html">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="grey" class="bi bi-journal-bookmark-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 1h6v7a.5.5 0 0 1-.757.429L9 7.083 6.757 8.43A.5.5 0 0 1 6 8V1z"/>
+                    <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                    <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                  </svg>
+                </a>
+            </div>-->
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js"></script>
+    <!--firebase config-->
+    <script src="js/config.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            get_tools_data()
+
+        });
+    </script>
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
